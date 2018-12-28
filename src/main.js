@@ -13,9 +13,9 @@ import NoMatch from './NoMatch'
 // 路由配置说明（你不用加载整个配置，
 // 只需加载一个你想要的根路由，
 // 也可以延迟加载这个配置）。
-/// const history = useRouterHistory(createHistory)({ queryKey: false });
+const history = useRouterHistory(createHistory)({ queryKey: false });
 ReactDOM.render((
-    <Router history={createHistory}>
+    <Router history={history}>
         <Route path="/" component={App}>
             {/* 当 url 为/时渲染 Index */}
             <IndexRoute component={Index} />
