@@ -31,3 +31,5 @@ server {
 生产环境打包代码（IE8可用）
 npm run build
 ```
+
+antd访问地址：[https://1x.ant.design/docs/react/introduce](https://1x.ant.design/docs/react/introduce)
