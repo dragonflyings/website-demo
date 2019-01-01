@@ -1,0 +1,17 @@
+@import '../variables.css';
+
+.web-header .ant-menu {
+  text-align: center;
+}
+.web-header .ant-menu-horizontal>.ant-menu-item {
+  display: inline;
+  float: none;
+}
+.web-header .ant-menu-horizontal>.ant-menu-item>a {
+  display: inline;
+}
+
+.activeRoute {
+  font-weight: bold;
+  text-decoration: underline;
+}

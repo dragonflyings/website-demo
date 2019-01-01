@@ -1,30 +1,101 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, IndexRoute, useRouterHistory } from 'react-router'
-import { createHistory } from "history"
+// 设置 browserHistory 需要配合nginx使用，地址栏里面不含#
+/// import createHashHistory from 'history/lib/createHashHistory'
+import { browserHistory } from 'react-router'
+import syncHistoryWithStore from 'react-router-redux/lib/sync'
+import createStore from './store/createStore'
+import AppContainer from './containers/AppContainer'
 
-import App from './App'
-import Index from './Index'
-import About from './About'
-import Users from './Users'
-import User from './User'
-import NoMatch from './NoMatch'
+// ========================================================
+// Browser History Setup
+// ========================================================
+/*const browserHistory = browserHistory(createHashHistory)({
+  basename: __BASENAME__,
+})*/
 
-// 路由配置说明（你不用加载整个配置，
-// 只需加载一个你想要的根路由，
-// 也可以延迟加载这个配置）。
-const history = useRouterHistory(createHistory)({ queryKey: false });
-ReactDOM.render((
-    <Router history={history}>
-        <Route path="/" component={App}>
-            {/* 当 url 为/时渲染 Index */}
-            <IndexRoute component={Index} />
-            <Route path="about" component={About}/>
-            <Route path="users" component={Users}>
-                <Route path="/user/:id" component={User}/>
-            </Route>
-            <Route path="*" component={NoMatch}/>
-        </Route>
-    </Router>
-), document.getElementById('root'))
+// ========================================================
+// Store and History Instantiation
+// ========================================================
+// Create redux store and sync with react-router-redux. We have installed the
+// react-router-redux reducer under the routerKey "router" in src/routes/index.js,
+// so we need to provide a custom `selectLocationState` to inform
+// react-router-redux of its location.
+const initialState = window.___INITIAL_STATE__
+const store = createStore(initialState, browserHistory)
+const history = syncHistoryWithStore(browserHistory, store, {
+  selectLocationState: (state) => state.router,
+})
 
+// 获取初始路由地址，初次打开、页面刷新时用
+let initPath
+history.listen((historyLocation) => {
+    initPath = historyLocation.pathname
+})
+
+// ========================================================
+// Developer Tools Setup
+// ========================================================
+if (__DEV__) {
+  if (window.devToolsExtension) {
+    window.devToolsExtension.open()
+  }
+}
+
+// ========================================================
+// Render Setup
+// ========================================================
+const MOUNT_NODE = document.getElementById('container')
+
+let render = (routerKey = null) => {
+  const routes = require('./routes/index').default(store)
+
+  ReactDOM.render(
+    <AppContainer
+      initPath={initPath}
+      store={store}
+      history={history}
+      routes={routes}
+      routerKey={routerKey}
+    />,
+    MOUNT_NODE
+  )
+}
+
+// Enable HMR and catch runtime errors in RedBox
+// This code is excluded from production bundle
+if (__DEV__) {
+  if (module.hot) {
+    // Development render functions
+    const renderApp = render
+    const renderError = (error) => {
+      const RedBox = require('redbox-react').default
+
+      ReactDOM.render(<RedBox error={error} />, MOUNT_NODE)
+    }
+
+    // Wrap render in try/catch
+    render = () => {
+      try {
+        renderApp()
+      } catch (error) {
+        renderError(error)
+      }
+    }
+
+    // Setup hot module replacement
+    module.hot.accept('./routes/index', () =>
+      setImmediate(() => {
+        ReactDOM.unmountComponentAtNode(MOUNT_NODE)
+        render()
+      })
+    )
+  }
+}
+
+// ========================================================
+// Go!
+// ========================================================
+render()
