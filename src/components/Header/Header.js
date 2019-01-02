@@ -24,6 +24,9 @@ const Header = (props, context) => {
                             <Menu.Item key="/table">
                                 <IndexLink to="/table">表格</IndexLink>
                             </Menu.Item>
+                            <Menu.Item key="/detail">
+                                <IndexLink to="/detail">详情页</IndexLink>
+                            </Menu.Item>
                         </Menu>
                     </div>
                 </div>

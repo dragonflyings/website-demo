@@ -5,9 +5,11 @@ import 'antd/lib/table/style/css'
 const columns = [{
     title: '姓名',
     dataIndex: 'name',
+    render: text => <a href={'/detail?name=' + encodeURIComponent(text)} target="_blank">{text}</a>
 }, {
     title: '年龄',
     dataIndex: 'age',
+    render: text => <a href={'/detail?age=' + text}>{text}</a>
 }, {
     title: '住址',
     dataIndex: 'address',

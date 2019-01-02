@@ -1,6 +1,7 @@
 import Layout from '../components/Layout'
 import Home from './Home'
 import Table from './Table'
+import Detail from './Detail'
 import NotFound from './NotFound'
 import counterRoute from './Counter'
 
@@ -12,6 +13,7 @@ export const createRoutes = (store) => ({
   childRoutes: [
     counterRoute(store),
     Table,
+    Detail,
     NotFound,
   ]
 })
