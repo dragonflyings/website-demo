@@ -1,6 +1,9 @@
 import React from 'react'
+import { Link } from 'react-router'
 import { Table } from 'antd';
 import 'antd/lib/table/style/css'
+import PropTypes from "prop-types";
+import Header from "components/Header/Header";
 
 const columns = [{
     title: '姓名',
@@ -9,7 +12,7 @@ const columns = [{
 }, {
     title: '年龄',
     dataIndex: 'age',
-    render: text => <a href={'/detail?age=' + text}>{text}</a>
+    render: text => <Link to={'/detail?age=' + text}>{text}</Link>
 }, {
     title: '住址',
     dataIndex: 'address',
@@ -32,10 +35,17 @@ const data = [{
     address: '西湖区湖底公园1号',
 }];
 
-export const TableView = (props) => (
-    <div>
-        <Table columns={columns} dataSource={data} pagination={false} />
-    </div>
-)
+export const TableView = (props, context) => {
+    const { history } = context
+
+    return (
+        <div>
+            <Table columns={columns} dataSource={data} pagination={false} />
+        </div>
+    )
+}
+Header.contextTypes = {
+    history:PropTypes.object.isRequired
+}
 
 export default TableView
